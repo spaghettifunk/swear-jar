@@ -31,6 +31,9 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
     info = p.get_host_api_info_by_index(0)
     numdevices = info.get('deviceCount')
 
+    print numdevices
+    print "\n"
+
     # for each audio device, determine if is an input or an output and
     # add it to the appropriate list and dictionary
     for i in range(0, numdevices):
@@ -40,7 +43,7 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
         if p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
                 print "Output Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name')
 
-    devinfo = p.get_device_info_by_index(0)
+    devinfo = p.get_device_info_by_index(1)
     print "Selected device is ", devinfo.get('name')
     if p.is_format_supported(44100,  # Sample rate
                              input_device=devinfo["index"],
@@ -49,7 +52,7 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
                     print 'Yay !'
 
     # Create an input stream with pyaudio
-    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=8192)
+    stream = p.open(format=pyaudio.paInt16, channels=1, rate=16000, input=True, frames_per_buffer=4096)
     # Start the stream
     stream.start_stream()
 
@@ -60,7 +63,7 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
     # Loop forever
     while True:
         # Read 1024 samples from the buffer
-        buf = stream.read(8192)
+        buf = stream.read(4096)
         # If data in the buffer, process using the sphinx decoder
         if buf:
             decoder.process_raw(buf, False, False)
@@ -74,9 +77,10 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
             decoder.start_utt()
 
 
-url = 'https://'
+url = 'https://swear-jar-office.herokuapp.com/swear/jar/'
+# url = 'http://127.0.0.1:8000/swear/jar/'
 payload = {
-    'name': 'your_name'
+    'name': 'Davide'
 }
 
 
