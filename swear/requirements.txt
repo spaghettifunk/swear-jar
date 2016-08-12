@@ -1,0 +1,13 @@
+AthenaVoice==1.0.0b1
+gTTS==1.1.6
+gTTS-token==1.1.1
+HeyAthena==1.2.2
+pocketsphinx==0.1.0
+PyAudio==0.2.9
+pyglet==1.2.4
+PyYAML==3.11
+requests==2.11.0
+selenium==2.53.6
+six==1.10.0
+SpeechRecognition==3.4.6
+wolframalpha==2.4
