@@ -79,6 +79,7 @@ payload = {
     'name': 'your_name'
 }
 
+
 def swear_function():
     requests.put(url, data=json.dumps(payload))
     print("You sweared!!!")
