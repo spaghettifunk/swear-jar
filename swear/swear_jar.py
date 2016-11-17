@@ -1,28 +1,24 @@
 
 import os
 from pocketsphinx import pocketsphinx
-from sphinxbase import sphinxbase
 import pyaudio
 import requests
 import json
 
 
-def start_keyphrase_recognition(keyphrase_function, key_phrase):
-    """ Starts a thread that is always listening for a specific key phrase. Once the
-        key phrase is recognized, the thread will call the keyphrase_function. This
-        function is called within the thread (a new thread is not started), so the
-        key phrase detection is paused until the function returns.
-
-    :param keyphrase_function: function that is called when the phrase is recognized
-    :param key_phrase: a string for the key phrase
-    """
+""" Starts a thread that is always listening for a specific key phrase.Once the
+    key phrase is recognized, the thread will call the keyphrase_function. This
+    function is called within the thread (a new thread is not started), so the
+    key phrase detection is paused until the function returns.
+"""
+def start_keyphrase_recognition(keyphrase_function, nothing):
     modeldir = "files/sphinx/models"
 
     # Create a decoder with certain model
     config = pocketsphinx.Decoder.default_config()
     config.set_string('-hmm', os.path.join(modeldir, 'en-us/en-us'))
     config.set_string('-dict', os.path.join(modeldir, 'en-us/cmudict-en-us.dict'))
-    config.set_string('-keyphrase', key_phrase)
+    config.set_string('-kws', 'keyphrase.list')
     config.set_string('-logfn', 'files/sphinx.log')
     config.set_float('-kws_threshold', 5)
 
@@ -30,9 +26,6 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
     p = pyaudio.PyAudio()
     info = p.get_host_api_info_by_index(0)
     numdevices = info.get('deviceCount')
-
-    print numdevices
-    print "\n"
 
     # for each audio device, determine if is an input or an output and
     # add it to the appropriate list and dictionary
@@ -43,7 +36,7 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
         if p.get_device_info_by_host_api_device_index(0, i).get('maxOutputChannels') > 0:
                 print "Output Device id ", i, " - ", p.get_device_info_by_host_api_device_index(0, i).get('name')
 
-    devinfo = p.get_device_info_by_index(1)
+    devinfo = p.get_device_info_by_index(0)
     print "Selected device is ", devinfo.get('name')
     if p.is_format_supported(44100,  # Sample rate
                              input_device=devinfo["index"],
@@ -63,7 +56,7 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
     # Loop forever
     while True:
         # Read 1024 samples from the buffer
-        buf = stream.read(4096)
+        buf = stream.read(1024)
         # If data in the buffer, process using the sphinx decoder
         if buf:
             decoder.process_raw(buf, False, False)
@@ -71,14 +64,17 @@ def start_keyphrase_recognition(keyphrase_function, key_phrase):
             break
         # If the hypothesis is not none, the key phrase was recognized
         if decoder.hyp() is not None:
-            keyphrase_function()
+            h = decoder.hyp()
+            print h.hypstr
+
+            # keyphrase_function()
             # Stop and reinitialize the decoder
             decoder.end_utt()
             decoder.start_utt()
 
 
-url = 'https://swear-jar-office.herokuapp.com/swear/jar/'
-# url = 'http://127.0.0.1:8000/swear/jar/'
+# url = 'https://swear-jar-office.herokuapp.com/swear/jar/'
+url = 'http://127.0.0.1:8000/swear/jar/'
 payload = {
     'name': 'Davide'
 }
@@ -90,5 +86,4 @@ def swear_function():
 
 
 if __name__ == "__main__":
-    # Start key phrase recognition and call the "demo_function" when triggered
-    start_keyphrase_recognition(swear_function, "shit")
+    start_keyphrase_recognition(swear_function, "nothing")
