@@ -13,13 +13,13 @@ def index(request):
     page = """
     SWEAR JAR :)
 
-    Bjorn has to pay: """ + str(swear.bjorn) + """
-    Alex has to pay: """ + str(swear.alex) + """
-    Wang has to pay: """ + str(swear.wang) + """
-    Patrick has to pay: """ + str(swear.patrick) + """
-    Dario has to pay: """ + str(swear.dario) + """
-    Davide has to pay: """ + str(swear.davide) + """
-    Rafael has to pay: """ + str(swear.rafael) + """
+    Bjorn has to pay: """ + str(swear.bjorn) + """ euro
+    Alex has to pay: """ + str(swear.alex) + """ euro
+    Wang has to pay: """ + str(swear.wang) + """ euro
+    Patrick has to pay: """ + str(swear.patrick) + """ euro
+    Dario has to pay: """ + str(swear.dario) + """ euro
+    Davide has to pay: """ + str(swear.davide) + """ euro
+    Rafael has to pay: """ + str(swear.rafael) + """ euro
     """
 
     return HttpResponse(status=200, content=page, content_type="application/json")

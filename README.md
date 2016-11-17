@@ -9,6 +9,7 @@ Continuos speech recognition for the swear jar in da office
 [https://swear-jar-office.herokuapp.com/swear/](https://swear-jar-office.herokuapp.com/swear/)
 
 ### How to run
+* Install _portaudio_, _pyAudio_ and _swig_. If you are on *OS X* you can install those packages using *brew*
 
 * Download the package and go inside the **swear** folder
 
